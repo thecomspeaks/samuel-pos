@@ -3,220 +3,113 @@
 <head>
 <meta charset="UTF-8"/>
 <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-<title>Samuel F&O</title>
+<title>Samuel POS</title>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet"/>
 <style>
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
-body{font-family:'Inter',sans-serif;background:#f5f6fa;color:#1a1d23;display:flex;flex-direction:column;min-height:100vh}
-.header{background:#fff;border-bottom:1px solid #e8eaf0;height:56px;display:flex;align-items:center;justify-content:space-between;padding:0 20px;position:sticky;top:0;z-index:200;box-shadow:0 1px 4px rgba(0,0,0,0.04)}
+body{font-family:'Inter',sans-serif;background:#f5f6fa;min-height:100vh;color:#1a1d23}
+.header{background:#fff;border-bottom:1px solid #e8eaf0;padding:0 20px;height:56px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:100;box-shadow:0 1px 4px rgba(0,0,0,0.04)}
 .header-left{display:flex;align-items:center;gap:12px}
 .sp-logo{width:34px;height:34px;background:#1a1d23;color:#fff;border-radius:8px;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:14px}
-.header-title{font-weight:600;font-size:15px}
-.pos-link{font-size:13px;color:#4f6ef7;font-weight:500;text-decoration:none;padding:6px 14px;border:1px solid #c7d0fc;border-radius:7px;transition:background 0.15s}
-.pos-link:hover{background:#f0f3ff}
-.app-body{display:flex;flex:1;overflow:hidden}
-.sidebar{width:200px;background:#fff;border-right:1px solid #e8eaf0;padding:16px 0;flex-shrink:0}
-.nav-item{display:flex;align-items:center;gap:10px;padding:11px 18px;cursor:pointer;font-size:14px;font-weight:500;color:#5a5f6e;transition:all 0.15s;border-left:3px solid transparent}
-.nav-item:hover{background:#f5f6fa;color:#1a1d23}
-.nav-item.active{background:#f0f3ff;color:#4f6ef7;border-left-color:#4f6ef7;font-weight:600}
-.nav-icon{font-size:16px;width:20px;text-align:center}
-.content{flex:1;overflow-y:auto;padding:24px 20px}
-.page{display:none}
-.page.active{display:block}
-.page-title{font-size:20px;font-weight:700;margin-bottom:20px}
-.kpi-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:14px;margin-bottom:24px}
-.kpi-card{background:#fff;border:1px solid #e8eaf0;border-radius:12px;padding:16px;box-shadow:0 1px 4px rgba(0,0,0,0.03)}
-.kpi-label{font-size:11px;font-weight:600;color:#7a7f8e;text-transform:uppercase;letter-spacing:0.5px;margin-bottom:8px}
-.kpi-value{font-size:22px;font-weight:700;color:#1a1d23}
-.kpi-card.debit .kpi-value{color:#e53e3e}
-.kpi-card.credit .kpi-value{color:#38a169}
-.kpi-card.net .kpi-value{color:#4f6ef7}
-.table-wrap{background:#fff;border:1px solid #e8eaf0;border-radius:12px;overflow:hidden;box-shadow:0 1px 4px rgba(0,0,0,0.03)}
-.table-header{padding:14px 18px;border-bottom:1px solid #e8eaf0;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:10px}
-.table-header-title{font-weight:600;font-size:14px}
-.search-box{padding:8px 12px;border:1.5px solid #e8eaf0;border-radius:7px;font-size:13px;font-family:'Inter',sans-serif;outline:none;width:200px;transition:border 0.15s}
-.search-box:focus{border-color:#4f6ef7}
-.filter-row{display:flex;gap:8px;flex-wrap:wrap}
-.filter-btn{padding:6px 12px;border:1.5px solid #e8eaf0;border-radius:6px;font-size:12px;font-weight:500;cursor:pointer;background:#fff;transition:all 0.15s;font-family:'Inter',sans-serif}
-.filter-btn.active{background:#1a1d23;color:#fff;border-color:#1a1d23}
-table{width:100%;border-collapse:collapse;font-size:13px}
-thead tr{background:#f5f6fa}
-th{padding:10px 14px;text-align:left;font-weight:600;font-size:11px;color:#7a7f8e;text-transform:uppercase;letter-spacing:0.5px;border-bottom:1px solid #e8eaf0}
-td{padding:11px 14px;border-bottom:1px solid #f0f1f5;color:#3a3f4b}
-tr:last-child td{border-bottom:none}
-tr:hover td{background:#fafbff}
-.badge{display:inline-block;padding:2px 8px;border-radius:20px;font-size:11px;font-weight:600}
-.badge-dr{background:#fff5f5;color:#e53e3e}
-.badge-cr{background:#f0fff4;color:#38a169}
-.badge-upi{background:#eff1ff;color:#4f6ef7}
-.badge-cash{background:#fffbeb;color:#d97706}
-.heads-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:10px;margin-bottom:20px}
-.head-item{background:#fff;border:1px solid #e8eaf0;border-radius:8px;padding:12px 14px;display:flex;align-items:center;justify-content:space-between;font-size:13px;font-weight:500}
-.del-btn{background:none;border:none;color:#c9cdd6;cursor:pointer;font-size:16px;transition:color 0.15s;padding:2px 6px}
-.del-btn:hover{color:#e53e3e}
-.add-head-row{display:flex;gap:10px;margin-top:4px}
-.add-input{flex:1;padding:10px 14px;border:1.5px solid #e8eaf0;border-radius:8px;font-size:14px;font-family:'Inter',sans-serif;outline:none;transition:border 0.15s}
-.add-input:focus{border-color:#4f6ef7}
-.add-btn{padding:10px 20px;background:#1a1d23;color:#fff;border:none;border-radius:8px;font-size:14px;font-weight:600;cursor:pointer;font-family:'Inter',sans-serif;white-space:nowrap}
-.export-card{background:#fff;border:1px solid #e8eaf0;border-radius:12px;padding:28px;max-width:400px}
-.export-card p{font-size:14px;color:#5a5f6e;margin-bottom:20px;line-height:1.6}
-.export-btn{padding:12px 28px;background:#1a1d23;color:#fff;border:none;border-radius:8px;font-size:15px;font-weight:600;cursor:pointer;font-family:'Inter',sans-serif}
-.settings-section{background:#fff;border:1px solid #e8eaf0;border-radius:12px;padding:22px;margin-bottom:18px;max-width:640px}
-.settings-label{font-size:13px;font-weight:600;color:#3a3f4b;margin-bottom:6px}
-.settings-desc{font-size:12px;color:#7a7f8e;margin-bottom:12px;line-height:1.5}
-.url-input{width:100%;padding:11px 14px;border:1.5px solid #e8eaf0;border-radius:8px;font-size:13px;font-family:'Inter',sans-serif;outline:none;transition:border 0.15s;margin-bottom:12px}
-.url-input:focus{border-color:#4f6ef7}
-.connect-btn{padding:10px 22px;background:#4f6ef7;color:#fff;border:none;border-radius:8px;font-size:14px;font-weight:600;cursor:pointer;font-family:'Inter',sans-serif}
-.connect-btn:hover{background:#3b5bdb}
-.reset-btn{padding:10px 22px;background:#fff;color:#e53e3e;border:1.5px solid #e53e3e;border-radius:8px;font-size:14px;font-weight:600;cursor:pointer;font-family:'Inter',sans-serif;margin-left:8px}
-.conn-status{display:inline-flex;align-items:center;gap:6px;margin-left:12px;font-size:13px;font-weight:500;color:#7a7f8e}
-.conn-dot{width:8px;height:8px;border-radius:50%;background:#e53e3e}
-.conn-dot.on{background:#38a169}
-.tg-coming{display:inline-block;padding:4px 10px;background:#eff1ff;color:#4f6ef7;border-radius:20px;font-size:11px;font-weight:600;margin-left:8px}
-.code-block{background:#1a1d23;color:#a8d8a8;border-radius:10px;padding:16px;font-size:12px;font-family:'Courier New',monospace;line-height:1.7;overflow-x:auto;white-space:pre;position:relative;max-height:420px;overflow-y:auto}
-.copy-btn{position:absolute;top:10px;right:10px;padding:5px 12px;background:#4f6ef7;color:#fff;border:none;border-radius:5px;font-size:11px;font-weight:600;cursor:pointer;font-family:'Inter',sans-serif}
+.header-info .name{font-weight:600;font-size:15px}
+.header-info .date{font-size:12px;color:#7a7f8e}
+.fo-link{font-size:13px;color:#4f6ef7;font-weight:500;text-decoration:none;padding:6px 14px;border:1px solid #c7d0fc;border-radius:7px;transition:background 0.15s}
+.fo-link:hover{background:#f0f3ff}
+.main{max-width:500px;margin:0 auto;padding:20px 16px 100px}
+.card{background:#fff;border-radius:12px;border:1px solid #e8eaf0;padding:16px;margin-bottom:14px;box-shadow:0 1px 4px rgba(0,0,0,0.03)}
+.toggle-row{display:flex;background:#f5f6fa;border:1px solid #e8eaf0;border-radius:10px;padding:4px}
+.toggle-btn{flex:1;padding:10px;text-align:center;border-radius:7px;cursor:pointer;font-weight:600;font-size:14px;transition:all 0.18s;user-select:none;color:#7a7f8e}
+.toggle-btn.active-dr{background:#fff;color:#e53e3e;box-shadow:0 1px 4px rgba(0,0,0,0.1)}
+.toggle-btn.active-cr{background:#fff;color:#38a169;box-shadow:0 1px 4px rgba(0,0,0,0.1)}
+.section-label{font-size:11px;font-weight:600;color:#7a7f8e;text-transform:uppercase;letter-spacing:0.6px;margin-bottom:10px}
+.head-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
+@media(min-width:400px){.head-grid{grid-template-columns:repeat(4,1fr)}}
+.head-box{padding:9px 6px;background:#f5f6fa;border:1.5px solid #e8eaf0;border-radius:8px;text-align:center;font-size:11px;font-weight:500;cursor:pointer;transition:all 0.15s;line-height:1.3;color:#3a3f4b;user-select:none}
+.head-box:hover{border-color:#4f6ef7;color:#4f6ef7;background:#f0f3ff}
+.head-box.selected-dr{background:#fff5f5;border-color:#e53e3e;color:#e53e3e;font-weight:600}
+.head-box.selected-cr{background:#f0fff4;border-color:#38a169;color:#38a169;font-weight:600}
+.narration-input{width:100%;border:1.5px solid #e8eaf0;border-radius:8px;padding:11px 14px;font-size:14px;font-family:'Inter',sans-serif;outline:none;transition:border 0.15s;resize:none;color:#1a1d23}
+.narration-input:focus{border-color:#4f6ef7}
+.amount-wrap{position:relative}
+.amount-currency{position:absolute;left:14px;top:50%;transform:translateY(-50%);font-size:22px;font-weight:600;color:#7a7f8e}
+.amount-input{width:100%;border:1.5px solid #e8eaf0;border-radius:8px;padding:14px 14px 14px 38px;font-size:28px;font-weight:700;font-family:'Inter',sans-serif;outline:none;transition:border 0.15s;color:#1a1d23;background:#fff}
+.amount-input:focus{border-color:#4f6ef7}
+.amount-input::placeholder{color:#c9cdd6}
+.pay-row{display:flex;background:#f5f6fa;border:1px solid #e8eaf0;border-radius:10px;padding:4px;gap:4px}
+.pay-btn{flex:1;padding:10px;text-align:center;border-radius:7px;cursor:pointer;font-weight:600;font-size:13px;transition:all 0.18s;user-select:none;color:#7a7f8e}
+.pay-btn.active{background:#fff;color:#1a1d23;box-shadow:0 1px 4px rgba(0,0,0,0.1)}
+.pay-upi.active{color:#4f6ef7}
+.pay-cash.active{color:#d97706}
+.save-btn{width:100%;padding:15px;background:#1a1d23;color:#fff;border:none;border-radius:10px;font-size:16px;font-weight:600;font-family:'Inter',sans-serif;cursor:pointer;transition:background 0.18s;letter-spacing:0.3px}
+.save-btn:hover{background:#2d3142}
+.save-btn:active{background:#111}
+.sync-bar{position:fixed;bottom:0;left:0;right:0;background:#fff;border-top:1px solid #e8eaf0;padding:8px 20px;display:flex;align-items:center;gap:8px;justify-content:center;font-size:12px;color:#7a7f8e}
+.sync-dot{width:8px;height:8px;border-radius:50%;background:#e53e3e;transition:background 0.3s}
+.sync-dot.connected{background:#38a169}
 .toast{position:fixed;top:70px;left:50%;transform:translateX(-50%) translateY(-20px);background:#1a1d23;color:#fff;padding:10px 22px;border-radius:8px;font-size:13px;font-weight:500;opacity:0;pointer-events:none;transition:all 0.3s;z-index:999;white-space:nowrap}
 .toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
 .toast.error{background:#e53e3e}
 .toast.success{background:#38a169}
-.empty-state{text-align:center;padding:40px 20px;color:#7a7f8e;font-size:14px}
-@media(max-width:640px){
-  .sidebar{width:56px}
-  .nav-item span:last-child{display:none}
-  .nav-item{justify-content:center;padding:12px 0}
-  .content{padding:16px 12px}
-}
 </style>
 </head>
 <body>
 <div class="header">
   <div class="header-left">
     <div class="sp-logo">SP</div>
-    <span class="header-title">Samuel F&amp;O</span>
+    <div class="header-info">
+      <div class="name">Samuel Philip</div>
+      <div class="date" id="headerDate"></div>
+    </div>
   </div>
-  <a href="samuel-pos.html" class="pos-link">← POS</a>
+  <a href="samuel-fo.html" class="fo-link">F&amp;O →</a>
 </div>
-<div class="app-body">
-  <div class="sidebar">
-    <div class="nav-item active" onclick="navigate('dashboard',this)"><span class="nav-icon">📊</span><span>Dashboard</span></div>
-    <div class="nav-item" onclick="navigate('ledger',this)"><span class="nav-icon">📋</span><span>All Ledger</span></div>
-    <div class="nav-item" onclick="navigate('heads',this)"><span class="nav-icon">🗂️</span><span>Manage Heads</span></div>
-    <div class="nav-item" onclick="navigate('export',this)"><span class="nav-icon">⬇️</span><span>Export</span></div>
-    <div class="nav-item" onclick="navigate('settings',this)"><span class="nav-icon">⚙️</span><span>Settings</span></div>
+<div class="main">
+  <div class="card">
+    <div class="section-label">Transaction Type</div>
+    <div class="toggle-row">
+      <div class="toggle-btn active-dr" id="btnDR" onclick="setType('DR')">⬆ Debit</div>
+      <div class="toggle-btn" id="btnCR" onclick="setType('CR')">⬇ Credit</div>
+    </div>
   </div>
-  <div class="content">
-
-    <!-- DASHBOARD -->
-    <div class="page active" id="page-dashboard">
-      <div class="page-title">Dashboard</div>
-      <div class="kpi-grid">
-        <div class="kpi-card debit"><div class="kpi-label">Total Debit</div><div class="kpi-value" id="kpiDebit">₹0</div></div>
-        <div class="kpi-card credit"><div class="kpi-label">Total Credit</div><div class="kpi-value" id="kpiCredit">₹0</div></div>
-        <div class="kpi-card net"><div class="kpi-label">Net Balance</div><div class="kpi-value" id="kpiNet">₹0</div></div>
-        <div class="kpi-card"><div class="kpi-label">UPI Debits</div><div class="kpi-value" id="kpiUPI">₹0</div></div>
-        <div class="kpi-card"><div class="kpi-label">Cash Debits</div><div class="kpi-value" id="kpiCash">₹0</div></div>
-        <div class="kpi-card"><div class="kpi-label">Total Entries</div><div class="kpi-value" id="kpiCount">0</div></div>
-      </div>
-      <div class="table-wrap">
-        <div class="table-header"><span class="table-header-title">Recent Transactions</span></div>
-        <div style="overflow-x:auto"><table>
-          <thead><tr><th>Date</th><th>Head</th><th>Type</th><th>Payment</th><th>Amount</th><th>Narration</th></tr></thead>
-          <tbody id="recentBody"><tr><td colspan="6" class="empty-state">Loading...</td></tr></tbody>
-        </table></div>
-      </div>
-    </div>
-
-    <!-- ALL LEDGER -->
-    <div class="page" id="page-ledger">
-      <div class="page-title">All Ledger</div>
-      <div class="table-wrap">
-        <div class="table-header">
-          <input class="search-box" id="searchBox" placeholder="Search head, narration..." oninput="renderLedger()"/>
-          <div class="filter-row">
-            <button class="filter-btn active" onclick="setFilter('all',this)">All</button>
-            <button class="filter-btn" onclick="setFilter('DR',this)">Debit</button>
-            <button class="filter-btn" onclick="setFilter('CR',this)">Credit</button>
-            <button class="filter-btn" onclick="setFilter('UPI',this)">UPI</button>
-            <button class="filter-btn" onclick="setFilter('Cash',this)">Cash</button>
-          </div>
-        </div>
-        <div style="overflow-x:auto"><table>
-          <thead><tr><th>#</th><th>Date</th><th>Head</th><th>Type</th><th>Payment</th><th>Amount</th><th>Narration</th></tr></thead>
-          <tbody id="ledgerBody"><tr><td colspan="7" class="empty-state">No data.</td></tr></tbody>
-        </table></div>
-      </div>
-    </div>
-
-    <!-- MANAGE HEADS -->
-    <div class="page" id="page-heads">
-      <div class="page-title">Manage Heads</div>
-      <div id="headsGrid" class="heads-grid"></div>
-      <div class="add-head-row">
-        <input class="add-input" id="newHeadInput" placeholder="Add new head..."/>
-        <button class="add-btn" onclick="addHead()">+ Add</button>
-      </div>
-    </div>
-
-    <!-- EXPORT -->
-    <div class="page" id="page-export">
-      <div class="page-title">Export</div>
-      <div class="export-card">
-        <p>Download all transactions as a CSV file. This exports everything currently loaded from your Google Sheet.</p>
-        <button class="export-btn" onclick="exportCSV()">⬇ Download CSV</button>
-      </div>
-    </div>
-
-    <!-- SETTINGS -->
-    <div class="page" id="page-settings">
-      <div class="page-title">Settings</div>
-
-      <div class="settings-section">
-        <div class="settings-label">Google Apps Script URL</div>
-        <div class="settings-desc">
-          A default URL is already hardcoded — works on any device automatically. 
-          You can override it here if you redeploy your Apps Script.
-        </div>
-        <input class="url-input" id="scriptUrlInput" placeholder="Paste new URL to override..."/>
-        <button class="connect-btn" onclick="saveAndConnect()">Save &amp; Connect</button>
-        <button class="reset-btn" onclick="resetUrl()">Reset to Default</button>
-        <span class="conn-status"><span class="conn-dot on" id="connDot"></span><span id="connText">Connected ✓</span></span>
-      </div>
-
-      <div class="settings-section">
-        <div class="settings-label">
-          Telegram Bot Integration
-          <span class="tg-coming">Coming Soon</span>
-        </div>
-        <div class="settings-desc">
-          In the future, you'll be able to send transactions via a Telegram bot by typing commands like:<br/><br/>
-          <code style="background:#f5f6fa;padding:4px 8px;border-radius:4px;font-size:12px">dr 150 Food & Dining UPI lunch with team</code><br/><br/>
-          The bot will post directly to your Google Sheet. Stay tuned!
-        </div>
-      </div>
-
-      <div class="settings-section">
-        <div class="settings-label">Apps Script Code</div>
-        <div class="settings-desc">Use this if you need to redeploy. Paste in Google Apps Script editor → Deploy as Web App → Access: Anyone.</div>
-        <div style="position:relative">
-          <div class="code-block" id="appsScriptCode"></div>
-          <button class="copy-btn" onclick="copyCode()">Copy</button>
-        </div>
-      </div>
-    </div>
-
+  <div class="card">
+    <div class="section-label">Select Head</div>
+    <div class="head-grid" id="headGrid"></div>
   </div>
+  <div class="card">
+    <div class="section-label">Narration</div>
+    <textarea class="narration-input" id="narration" rows="2" placeholder="Optional note..."></textarea>
+  </div>
+  <div class="card">
+    <div class="section-label">Amount</div>
+    <div class="amount-wrap">
+      <span class="amount-currency">₹</span>
+      <input class="amount-input" id="amount" type="number" placeholder="0" min="0" step="0.01"/>
+    </div>
+  </div>
+  <div class="card">
+    <div class="section-label">Payment Mode</div>
+    <div class="pay-row">
+      <div class="pay-btn pay-upi active" id="btnUPI" onclick="setPayment('UPI')">📱 UPI</div>
+      <div class="pay-btn pay-cash" id="btnCash" onclick="setPayment('Cash')">💵 Cash</div>
+    </div>
+  </div>
+  <button class="save-btn" onclick="saveEntry()">Save Entry</button>
+</div>
+<div class="sync-bar">
+  <div class="sync-dot connected" id="syncDot"></div>
+  <span id="syncText">Sheet connected</span>
 </div>
 <div class="toast" id="toast"></div>
-
 <script>
+// ── HARDCODED URL — works on any device automatically ──
 const DEFAULT_URL = "https://script.google.com/macros/s/AKfycbw7iSeNCzQ20PMGDY3bsBKD6co1r08xT2w2QDQkpnOn9B4hf3aXWNorFS1HgmQKH9AZwg/exec";
-const STORAGE_KEY = 'samuel_sheet_url';
 
 function getSheetUrl(){
-  return localStorage.getItem(STORAGE_KEY) || DEFAULT_URL;
+  // Use localStorage override if set (from F&O Settings), else use hardcoded default
+  return localStorage.getItem('samuel_sheet_url') || DEFAULT_URL;
 }
 
-const DEFAULT_HEADS = [
+const HEADS = [
   "Opening Balance","Salary Received","Personal Withdrawals / Drawings",
   "Food & Dining Expenses","Medical Expenses","Toiletries & Cosmetics",
   "Grocery & Snacks","Travel & Conveyance","Mobile Recharge & Communication",
@@ -226,241 +119,98 @@ const DEFAULT_HEADS = [
   "Gifts & Donations"
 ];
 
-let allTransactions = [];
-let activeFilter = 'all';
-let heads = [...DEFAULT_HEADS];
+let selectedType = 'DR';
+let selectedHead = '';
+let selectedPayment = 'UPI';
 
-const GAS_CODE = `function doPost(e) {
-  try {
-    var ss = SpreadsheetApp.getActiveSpreadsheet();
-    var sheet = ss.getSheetByName("Transactions") || ss.insertSheet("Transactions");
-    if (sheet.getLastRow() === 0) {
-      sheet.appendRow(["ID","Date","Head","Type","Payment","Amount","Narration"]);
-    }
-    var data = JSON.parse(e.postData.contents);
-    sheet.appendRow([
-      data.id || "",
-      data.date || "",
-      data.head || "",
-      data.type || "",
-      data.payment || "",
-      data.amount || 0,
-      data.narration || ""
-    ]);
-    return ContentService
-      .createTextOutput(JSON.stringify({status:"success"}))
-      .setMimeType(ContentService.MimeType.JSON);
-  } catch(err) {
-    return ContentService
-      .createTextOutput(JSON.stringify({status:"error",message:err.message}))
-      .setMimeType(ContentService.MimeType.JSON);
-  }
-}
+document.getElementById('headerDate').textContent = new Date().toLocaleDateString('en-IN',{weekday:'short',day:'numeric',month:'short',year:'numeric'});
 
-function doGet(e) {
-  try {
-    var ss = SpreadsheetApp.getActiveSpreadsheet();
-    var sheet = ss.getSheetByName("Transactions");
-    if (!sheet || sheet.getLastRow() <= 1) {
-      return ContentService
-        .createTextOutput(JSON.stringify([]))
-        .setMimeType(ContentService.MimeType.JSON);
-    }
-    var rows = sheet.getDataRange().getValues();
-    var headers = rows[0];
-    var result = [];
-    for (var i = 1; i < rows.length; i++) {
-      var obj = {};
-      headers.forEach(function(h, idx) {
-        obj[h.toLowerCase()] = rows[i][idx];
-      });
-      result.push(obj);
-    }
-    return ContentService
-      .createTextOutput(JSON.stringify(result))
-      .setMimeType(ContentService.MimeType.JSON);
-  } catch(err) {
-    return ContentService
-      .createTextOutput(JSON.stringify({error:err.message}))
-      .setMimeType(ContentService.MimeType.JSON);
-  }
-}`;
-
-document.getElementById('appsScriptCode').textContent = GAS_CODE;
-
-// ── INIT ──
-window.addEventListener('load', () => {
-  const override = localStorage.getItem(STORAGE_KEY);
-  if(override){
-    document.getElementById('scriptUrlInput').value = override;
-  }
-  fetchTransactions(getSheetUrl());
-  renderHeads();
-});
-
-// ── NAVIGATION ──
-function navigate(page, el){
-  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
-  document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
-  document.getElementById('page-'+page).classList.add('active');
-  el.classList.add('active');
-  if(page==='ledger') renderLedger();
-  if(page==='heads') renderHeads();
-}
-
-// ── SETTINGS ──
-function saveAndConnect(){
-  const url = document.getElementById('scriptUrlInput').value.trim();
-  if(!url){ showToast('❌ Please paste a valid URL', 'error'); return; }
-  localStorage.setItem(STORAGE_KEY, url);
-  showToast('✅ URL saved! Fetching data...', 'success');
-  fetchTransactions(url);
-}
-
-function resetUrl(){
-  localStorage.removeItem(STORAGE_KEY);
-  document.getElementById('scriptUrlInput').value = '';
-  showToast('✅ Reset to default URL', 'success');
-  fetchTransactions(DEFAULT_URL);
-}
-
-// ── FETCH ──
-async function fetchTransactions(url){
-  try {
-    const res = await fetch(url, {mode:'cors'});
-    const data = await res.json();
-    if(Array.isArray(data)){
-      allTransactions = data.map(r => ({
-        id: r.id||'',
-        date: r.date||'',
-        head: r.head||'',
-        type: (r.type||'').toUpperCase(),
-        payment: r.payment||'',
-        amount: parseFloat(r.amount)||0,
-        narration: r.narration||''
-      }));
-      updateDashboard();
-      renderLedger();
-      if(allTransactions.length) showToast('✅ ' + allTransactions.length + ' transactions loaded', 'success');
-    }
-  } catch(e){
-    showToast('⚠️ Could not fetch from sheet', 'error');
-  }
-}
-
-// ── DASHBOARD ──
-function fmt(n){ return '₹' + n.toLocaleString('en-IN',{maximumFractionDigits:2}); }
-
-function updateDashboard(){
-  const debit  = allTransactions.filter(t=>t.type==='DR').reduce((s,t)=>s+t.amount,0);
-  const credit = allTransactions.filter(t=>t.type==='CR').reduce((s,t)=>s+t.amount,0);
-  const net    = credit - debit;
-  const upiDeb = allTransactions.filter(t=>t.type==='DR'&&t.payment==='UPI').reduce((s,t)=>s+t.amount,0);
-  const cashDeb= allTransactions.filter(t=>t.type==='DR'&&t.payment==='Cash').reduce((s,t)=>s+t.amount,0);
-  document.getElementById('kpiDebit').textContent  = fmt(debit);
-  document.getElementById('kpiCredit').textContent = fmt(credit);
-  document.getElementById('kpiNet').textContent    = fmt(net);
-  document.getElementById('kpiUPI').textContent    = fmt(upiDeb);
-  document.getElementById('kpiCash').textContent   = fmt(cashDeb);
-  document.getElementById('kpiCount').textContent  = allTransactions.length;
-  const recent = [...allTransactions].reverse().slice(0,10);
-  const tbody = document.getElementById('recentBody');
-  if(!recent.length){
-    tbody.innerHTML = '<tr><td colspan="6" class="empty-state">No transactions yet.</td></tr>';
-    return;
-  }
-  tbody.innerHTML = recent.map(t=>`
-    <tr>
-      <td>${t.date}</td>
-      <td>${t.head}</td>
-      <td><span class="badge ${t.type==='DR'?'badge-dr':'badge-cr'}">${t.type}</span></td>
-      <td><span class="badge ${t.payment==='UPI'?'badge-upi':'badge-cash'}">${t.payment}</span></td>
-      <td style="font-weight:600">${fmt(t.amount)}</td>
-      <td style="color:#7a7f8e">${t.narration||'—'}</td>
-    </tr>`).join('');
-}
-
-// ── LEDGER ──
-function setFilter(f, el){
-  activeFilter = f;
-  document.querySelectorAll('.filter-btn').forEach(b=>b.classList.remove('active'));
-  el.classList.add('active');
-  renderLedger();
-}
-
-function renderLedger(){
-  const q = (document.getElementById('searchBox')?.value||'').toLowerCase();
-  let rows = allTransactions.filter(t=>{
-    const matchQ = !q || t.head.toLowerCase().includes(q) || (t.narration||'').toLowerCase().includes(q);
-    const matchF = activeFilter==='all' || t.type===activeFilter || t.payment===activeFilter;
-    return matchQ && matchF;
+function buildHeads(){
+  const grid = document.getElementById('headGrid');
+  grid.innerHTML = '';
+  HEADS.forEach(h => {
+    const box = document.createElement('div');
+    box.className = 'head-box';
+    box.textContent = h;
+    box.onclick = () => selectHead(h, box);
+    grid.appendChild(box);
   });
-  const tbody = document.getElementById('ledgerBody');
-  if(!rows.length){
-    tbody.innerHTML = '<tr><td colspan="7" class="empty-state">No matching transactions.</td></tr>';
-    return;
+}
+buildHeads();
+
+function selectHead(h, el){
+  document.querySelectorAll('.head-box').forEach(b => b.classList.remove('selected-dr','selected-cr'));
+  selectedHead = h;
+  el.classList.add(selectedType === 'DR' ? 'selected-dr' : 'selected-cr');
+}
+
+function setType(t){
+  selectedType = t;
+  document.getElementById('btnDR').className = 'toggle-btn' + (t==='DR'?' active-dr':'');
+  document.getElementById('btnCR').className = 'toggle-btn' + (t==='CR'?' active-cr':'');
+  document.querySelectorAll('.head-box').forEach(b => {
+    if(b.textContent === selectedHead){
+      b.classList.remove('selected-dr','selected-cr');
+      b.classList.add(t==='DR'?'selected-dr':'selected-cr');
+    }
+  });
+}
+
+function setPayment(p){
+  selectedPayment = p;
+  document.getElementById('btnUPI').className = 'pay-btn pay-upi' + (p==='UPI'?' active':'');
+  document.getElementById('btnCash').className = 'pay-btn pay-cash' + (p==='Cash'?' active':'');
+}
+
+function showToast(msg, type='success'){
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.className = 'toast show ' + type;
+  setTimeout(() => t.className = 'toast', 2800);
+}
+
+function generateID(){
+  return 'TXN' + Date.now();
+}
+
+async function saveEntry(){
+  const url = getSheetUrl();
+  if(!selectedHead){ showToast('⚠️ Please select a head', 'error'); return; }
+  const amt = parseFloat(document.getElementById('amount').value);
+  if(!amt || amt <= 0){ showToast('⚠️ Enter a valid amount', 'error'); return; }
+
+  const entry = {
+    id: generateID(),
+    date: new Date().toLocaleString('en-IN'),
+    head: selectedHead,
+    type: selectedType,
+    payment: selectedPayment,
+    amount: amt,
+    narration: document.getElementById('narration').value.trim() || ''
+  };
+
+  const btn = document.querySelector('.save-btn');
+  btn.textContent = 'Saving...';
+  btn.disabled = true;
+
+  try {
+    await fetch(url, {
+      method: 'POST',
+      mode: 'no-cors',
+      headers: {'Content-Type':'application/json'},
+      body: JSON.stringify(entry)
+    });
+    showToast('✅ Entry saved to sheet!', 'success');
+    document.getElementById('amount').value = '';
+    document.getElementById('narration').value = '';
+    selectedHead = '';
+    document.querySelectorAll('.head-box').forEach(b => b.classList.remove('selected-dr','selected-cr'));
+  } catch(e){
+    showToast('❌ Failed to save: ' + e.message, 'error');
   }
-  tbody.innerHTML = [...rows].reverse().map((t,i)=>`
-    <tr>
-      <td style="color:#7a7f8e">${rows.length-i}</td>
-      <td>${t.date}</td>
-      <td>${t.head}</td>
-      <td><span class="badge ${t.type==='DR'?'badge-dr':'badge-cr'}">${t.type}</span></td>
-      <td><span class="badge ${t.payment==='UPI'?'badge-upi':'badge-cash'}">${t.payment}</span></td>
-      <td style="font-weight:600">${fmt(t.amount)}</td>
-      <td style="color:#7a7f8e">${t.narration||'—'}</td>
-    </tr>`).join('');
-}
 
-// ── HEADS ──
-function renderHeads(){
-  const grid = document.getElementById('headsGrid');
-  if(!grid) return;
-  grid.innerHTML = heads.map((h,i)=>`
-    <div class="head-item">
-      <span>${h}</span>
-      <button class="del-btn" onclick="deleteHead(${i})">✕</button>
-    </div>`).join('');
-}
-function deleteHead(i){ heads.splice(i,1); renderHeads(); showToast('Head removed','success'); }
-function addHead(){
-  const inp = document.getElementById('newHeadInput');
-  const val = inp.value.trim();
-  if(!val){ showToast('Enter a head name','error'); return; }
-  if(heads.includes(val)){ showToast('Head already exists','error'); return; }
-  heads.push(val); inp.value=''; renderHeads(); showToast('Head added ✓','success');
-}
-
-// ── EXPORT ──
-function exportCSV(){
-  if(!allTransactions.length){ showToast('No data to export','error'); return; }
-  const headers = ['ID','Date','Head','Type','Payment','Amount','Narration'];
-  const rows = allTransactions.map(t=>[
-    t.id,t.date,t.head,t.type,t.payment,t.amount,t.narration
-  ].map(v=>'"'+(v||'').toString().replace(/"/g,'""')+'"').join(','));
-  const csv = [headers.join(','),...rows].join('\n');
-  const blob = new Blob([csv],{type:'text/csv'});
-  const a = document.createElement('a');
-  a.href = URL.createObjectURL(blob);
-  a.download = 'samuel_transactions_'+new Date().toISOString().slice(0,10)+'.csv';
-  a.click();
-  showToast('✅ CSV downloaded!','success');
-}
-
-// ── COPY ──
-function copyCode(){
-  navigator.clipboard.writeText(GAS_CODE)
-    .then(()=>showToast('✅ Code copied!','success'))
-    .catch(()=>showToast('Copy failed — select manually','error'));
-}
-
-  
-// ── TOAST ──
-function showToast(msg,type='success'){
-  const t=document.getElementById('toast');
-  t.textContent=msg;
-  t.className='toast show '+type;
-  setTimeout(()=>t.className='toast',2800);
+  btn.textContent = 'Save Entry';
+  btn.disabled = false;
 }
 </script>
 </body>
