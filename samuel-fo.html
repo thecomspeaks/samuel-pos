@@ -1,0 +1,490 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Samuel F&O</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet"/>
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Inter',sans-serif;background:#f5f6fa;color:#1a1d23;display:flex;flex-direction:column;min-height:100vh}
+
+/* HEADER */
+.header{background:#fff;border-bottom:1px solid #e8eaf0;height:56px;display:flex;align-items:center;justify-content:space-between;padding:0 20px;position:sticky;top:0;z-index:200;box-shadow:0 1px 4px rgba(0,0,0,0.04)}
+.header-left{display:flex;align-items:center;gap:12px}
+.sp-logo{width:34px;height:34px;background:#1a1d23;color:#fff;border-radius:8px;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:14px}
+.header-title{font-weight:600;font-size:15px}
+.pos-link{font-size:13px;color:#4f6ef7;font-weight:500;text-decoration:none;padding:6px 14px;border:1px solid #c7d0fc;border-radius:7px;transition:background 0.15s}
+.pos-link:hover{background:#f0f3ff}
+
+/* LAYOUT */
+.app-body{display:flex;flex:1;overflow:hidden}
+
+/* SIDEBAR */
+.sidebar{width:200px;background:#fff;border-right:1px solid #e8eaf0;padding:16px 0;flex-shrink:0;display:flex;flex-direction:column}
+.nav-item{display:flex;align-items:center;gap:10px;padding:11px 18px;cursor:pointer;font-size:14px;font-weight:500;color:#5a5f6e;transition:all 0.15s;border-left:3px solid transparent}
+.nav-item:hover{background:#f5f6fa;color:#1a1d23}
+.nav-item.active{background:#f0f3ff;color:#4f6ef7;border-left-color:#4f6ef7;font-weight:600}
+.nav-icon{font-size:16px;width:20px;text-align:center}
+
+/* CONTENT */
+.content{flex:1;overflow-y:auto;padding:24px 20px}
+.page{display:none}
+.page.active{display:block}
+.page-title{font-size:20px;font-weight:700;margin-bottom:20px}
+
+/* KPI CARDS */
+.kpi-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:14px;margin-bottom:24px}
+.kpi-card{background:#fff;border:1px solid #e8eaf0;border-radius:12px;padding:16px;box-shadow:0 1px 4px rgba(0,0,0,0.03)}
+.kpi-label{font-size:11px;font-weight:600;color:#7a7f8e;text-transform:uppercase;letter-spacing:0.5px;margin-bottom:8px}
+.kpi-value{font-size:22px;font-weight:700;color:#1a1d23}
+.kpi-card.debit .kpi-value{color:#e53e3e}
+.kpi-card.credit .kpi-value{color:#38a169}
+.kpi-card.net .kpi-value{color:#4f6ef7}
+
+/* TABLE */
+.table-wrap{background:#fff;border:1px solid #e8eaf0;border-radius:12px;overflow:hidden;box-shadow:0 1px 4px rgba(0,0,0,0.03)}
+.table-header{padding:14px 18px;border-bottom:1px solid #e8eaf0;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:10px}
+.table-header-title{font-weight:600;font-size:14px}
+.search-box{padding:8px 12px;border:1.5px solid #e8eaf0;border-radius:7px;font-size:13px;font-family:'Inter',sans-serif;outline:none;width:200px;transition:border 0.15s}
+.search-box:focus{border-color:#4f6ef7}
+.filter-row{display:flex;gap:8px;flex-wrap:wrap}
+.filter-btn{padding:6px 12px;border:1.5px solid #e8eaf0;border-radius:6px;font-size:12px;font-weight:500;cursor:pointer;background:#fff;transition:all 0.15s;font-family:'Inter',sans-serif}
+.filter-btn.active{background:#1a1d23;color:#fff;border-color:#1a1d23}
+table{width:100%;border-collapse:collapse;font-size:13px}
+thead tr{background:#f5f6fa}
+th{padding:10px 14px;text-align:left;font-weight:600;font-size:11px;color:#7a7f8e;text-transform:uppercase;letter-spacing:0.5px;border-bottom:1px solid #e8eaf0}
+td{padding:11px 14px;border-bottom:1px solid #f0f1f5;color:#3a3f4b}
+tr:last-child td{border-bottom:none}
+tr:hover td{background:#fafbff}
+.badge{display:inline-block;padding:2px 8px;border-radius:20px;font-size:11px;font-weight:600}
+.badge-dr{background:#fff5f5;color:#e53e3e}
+.badge-cr{background:#f0fff4;color:#38a169}
+.badge-upi{background:#eff1ff;color:#4f6ef7}
+.badge-cash{background:#fffbeb;color:#d97706}
+
+/* MANAGE HEADS */
+.heads-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:10px;margin-bottom:20px}
+.head-item{background:#fff;border:1px solid #e8eaf0;border-radius:8px;padding:12px 14px;display:flex;align-items:center;justify-content:space-between;font-size:13px;font-weight:500}
+.del-btn{background:none;border:none;color:#c9cdd6;cursor:pointer;font-size:16px;transition:color 0.15s;padding:2px 6px}
+.del-btn:hover{color:#e53e3e}
+.add-head-row{display:flex;gap:10px;margin-top:4px}
+.add-input{flex:1;padding:10px 14px;border:1.5px solid #e8eaf0;border-radius:8px;font-size:14px;font-family:'Inter',sans-serif;outline:none;transition:border 0.15s}
+.add-input:focus{border-color:#4f6ef7}
+.add-btn{padding:10px 20px;background:#1a1d23;color:#fff;border:none;border-radius:8px;font-size:14px;font-weight:600;cursor:pointer;font-family:'Inter',sans-serif;white-space:nowrap}
+
+/* EXPORT */
+.export-card{background:#fff;border:1px solid #e8eaf0;border-radius:12px;padding:28px;text-align:center;max-width:400px}
+.export-card p{font-size:14px;color:#5a5f6e;margin-bottom:20px;line-height:1.6}
+.export-btn{padding:12px 28px;background:#1a1d23;color:#fff;border:none;border-radius:8px;font-size:15px;font-weight:600;cursor:pointer;font-family:'Inter',sans-serif}
+
+/* SETTINGS */
+.settings-section{background:#fff;border:1px solid #e8eaf0;border-radius:12px;padding:22px;margin-bottom:18px;max-width:640px}
+.settings-label{font-size:13px;font-weight:600;color:#3a3f4b;margin-bottom:8px}
+.settings-desc{font-size:12px;color:#7a7f8e;margin-bottom:12px;line-height:1.5}
+.url-input{width:100%;padding:11px 14px;border:1.5px solid #e8eaf0;border-radius:8px;font-size:13px;font-family:'Inter',sans-serif;outline:none;transition:border 0.15s;margin-bottom:12px}
+.url-input:focus{border-color:#4f6ef7}
+.connect-btn{padding:10px 22px;background:#4f6ef7;color:#fff;border:none;border-radius:8px;font-size:14px;font-weight:600;cursor:pointer;font-family:'Inter',sans-serif;transition:background 0.15s}
+.connect-btn:hover{background:#3b5bdb}
+.conn-status{display:inline-flex;align-items:center;gap:6px;margin-left:12px;font-size:13px;font-weight:500;color:#7a7f8e}
+.conn-dot{width:8px;height:8px;border-radius:50%;background:#e53e3e}
+.conn-dot.on{background:#38a169}
+
+.code-block{background:#1a1d23;color:#a8d8a8;border-radius:10px;padding:16px;font-size:12px;font-family:'Courier New',monospace;line-height:1.7;overflow-x:auto;white-space:pre;position:relative;max-height:420px;overflow-y:auto}
+.copy-btn{position:absolute;top:10px;right:10px;padding:5px 12px;background:#4f6ef7;color:#fff;border:none;border-radius:5px;font-size:11px;font-weight:600;cursor:pointer;font-family:'Inter',sans-serif}
+
+/* Toast */
+.toast{position:fixed;top:70px;left:50%;transform:translateX(-50%) translateY(-20px);background:#1a1d23;color:#fff;padding:10px 22px;border-radius:8px;font-size:13px;font-weight:500;opacity:0;pointer-events:none;transition:all 0.3s;z-index:999;white-space:nowrap}
+.toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+.toast.error{background:#e53e3e}
+.toast.success{background:#38a169}
+
+/* Mobile sidebar */
+@media(max-width:640px){
+  .sidebar{width:56px}
+  .nav-item span:last-child{display:none}
+  .nav-item{justify-content:center;padding:12px 0}
+  .nav-icon{width:auto}
+  .content{padding:16px 12px}
+}
+.empty-state{text-align:center;padding:40px 20px;color:#7a7f8e;font-size:14px}
+</style>
+</head>
+<body>
+
+<div class="header">
+  <div class="header-left">
+    <div class="sp-logo">SP</div>
+    <span class="header-title">Samuel F&amp;O</span>
+  </div>
+  <a href="samuel-pos.html" class="pos-link">← POS</a>
+</div>
+
+<div class="app-body">
+  <!-- SIDEBAR -->
+  <div class="sidebar">
+    <div class="nav-item active" onclick="navigate('dashboard')"><span class="nav-icon">📊</span><span>Dashboard</span></div>
+    <div class="nav-item" onclick="navigate('ledger')"><span class="nav-icon">📋</span><span>All Ledger</span></div>
+    <div class="nav-item" onclick="navigate('heads')"><span class="nav-icon">🗂️</span><span>Manage Heads</span></div>
+    <div class="nav-item" onclick="navigate('export')"><span class="nav-icon">⬇️</span><span>Export</span></div>
+    <div class="nav-item" onclick="navigate('settings')"><span class="nav-icon">⚙️</span><span>Settings</span></div>
+  </div>
+
+  <!-- CONTENT -->
+  <div class="content">
+
+    <!-- DASHBOARD -->
+    <div class="page active" id="page-dashboard">
+      <div class="page-title">Dashboard</div>
+      <div class="kpi-grid">
+        <div class="kpi-card debit"><div class="kpi-label">Total Debit</div><div class="kpi-value" id="kpiDebit">₹0</div></div>
+        <div class="kpi-card credit"><div class="kpi-label">Total Credit</div><div class="kpi-value" id="kpiCredit">₹0</div></div>
+        <div class="kpi-card net"><div class="kpi-label">Net Balance</div><div class="kpi-value" id="kpiNet">₹0</div></div>
+        <div class="kpi-card"><div class="kpi-label">UPI Debits</div><div class="kpi-value" id="kpiUPI">₹0</div></div>
+        <div class="kpi-card"><div class="kpi-label">Cash Debits</div><div class="kpi-value" id="kpiCash">₹0</div></div>
+        <div class="kpi-card"><div class="kpi-label">Total Entries</div><div class="kpi-value" id="kpiCount">0</div></div>
+      </div>
+      <div class="table-wrap">
+        <div class="table-header"><span class="table-header-title">Recent Transactions</span></div>
+        <div style="overflow-x:auto"><table id="recentTable">
+          <thead><tr><th>Date</th><th>Head</th><th>Type</th><th>Payment</th><th>Amount</th><th>Narration</th></tr></thead>
+          <tbody id="recentBody"><tr><td colspan="6" class="empty-state">No transactions yet. Connect your sheet in Settings.</td></tr></tbody>
+        </table></div>
+      </div>
+    </div>
+
+    <!-- ALL LEDGER -->
+    <div class="page" id="page-ledger">
+      <div class="page-title">All Ledger</div>
+      <div class="table-wrap">
+        <div class="table-header">
+          <input class="search-box" id="searchBox" placeholder="Search head, narration..." oninput="renderLedger()"/>
+          <div class="filter-row">
+            <button class="filter-btn active" onclick="setFilter('all',this)">All</button>
+            <button class="filter-btn" onclick="setFilter('DR',this)">Debit</button>
+            <button class="filter-btn" onclick="setFilter('CR',this)">Credit</button>
+            <button class="filter-btn" onclick="setFilter('UPI',this)">UPI</button>
+            <button class="filter-btn" onclick="setFilter('Cash',this)">Cash</button>
+          </div>
+        </div>
+        <div style="overflow-x:auto"><table>
+          <thead><tr><th>#</th><th>Date</th><th>Head</th><th>Type</th><th>Payment</th><th>Amount</th><th>Narration</th></tr></thead>
+          <tbody id="ledgerBody"><tr><td colspan="7" class="empty-state">No data.</td></tr></tbody>
+        </table></div>
+      </div>
+    </div>
+
+    <!-- MANAGE HEADS -->
+    <div class="page" id="page-heads">
+      <div class="page-title">Manage Heads</div>
+      <div id="headsGrid" class="heads-grid"></div>
+      <div class="add-head-row">
+        <input class="add-input" id="newHeadInput" placeholder="Add new head..."/>
+        <button class="add-btn" onclick="addHead()">+ Add</button>
+      </div>
+    </div>
+
+    <!-- EXPORT -->
+    <div class="page" id="page-export">
+      <div class="page-title">Export</div>
+      <div class="export-card">
+        <p>Download all transactions as a CSV file. This exports everything currently loaded from your Google Sheet.</p>
+        <button class="export-btn" onclick="exportCSV()">⬇ Download CSV</button>
+      </div>
+    </div>
+
+    <!-- SETTINGS -->
+    <div class="page" id="page-settings">
+      <div class="page-title">Settings</div>
+
+      <div class="settings-section">
+        <div class="settings-label">Google Apps Script URL</div>
+        <div class="settings-desc">Paste your deployed Apps Script Web App URL below. This will be saved in browser localStorage and shared with the POS page automatically.</div>
+        <input class="url-input" id="scriptUrlInput" placeholder="https://script.google.com/macros/s/..."/>
+        <button class="connect-btn" onclick="saveAndConnect()">Save &amp; Connect</button>
+        <span class="conn-status"><span class="conn-dot" id="connDot"></span><span id="connText">Not connected</span></span>
+      </div>
+
+      <div class="settings-section">
+        <div class="settings-label">Apps Script Code</div>
+        <div class="settings-desc">Copy this code, paste it in your Google Apps Script editor, and deploy as a Web App (access: Anyone).</div>
+        <div style="position:relative">
+          <div class="code-block" id="appsScriptCode"></div>
+          <button class="copy-btn" onclick="copyCode()">Copy</button>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+const STORAGE_KEY = 'samuel_sheet_url';
+const DEFAULT_HEADS = [
+  "Opening Balance","Salary Received","Personal Withdrawals / Drawings",
+  "Food & Dining Expenses","Medical Expenses","Toiletries & Cosmetics",
+  "Grocery & Snacks","Travel & Conveyance","Mobile Recharge & Communication",
+  "Household / Family Support","Friends & Personal Transfers","Returns & Refunds",
+  "Bank Transactions","Miscellaneous Expenses","Office / Shop Purchases",
+  "Entertainment / Outing","Medical BLGM","Stationery / Office Supplies",
+  "Gifts & Donations"
+];
+
+let allTransactions = [];
+let currentFilter = 'all';
+let heads = [...DEFAULT_HEADS];
+
+// ── APPS SCRIPT CODE STRING ──
+const GAS_CODE = `function doPost(e) {
+  try {
+    var ss = SpreadsheetApp.getActiveSpreadsheet();
+    var sheet = ss.getSheetByName("Transactions") || ss.insertSheet("Transactions");
+    if (sheet.getLastRow() === 0) {
+      sheet.appendRow(["ID","Date","Head","Type","Payment","Amount","Narration"]);
+    }
+    var data = JSON.parse(e.postData.contents);
+    sheet.appendRow([
+      data.id || "",
+      data.date || "",
+      data.head || "",
+      data.type || "",
+      data.payment || "",
+      data.amount || 0,
+      data.narration || ""
+    ]);
+    return ContentService
+      .createTextOutput(JSON.stringify({status:"success"}))
+      .setMimeType(ContentService.MimeType.JSON);
+  } catch(err) {
+    return ContentService
+      .createTextOutput(JSON.stringify({status:"error",message:err.message}))
+      .setMimeType(ContentService.MimeType.JSON);
+  }
+}
+
+function doGet(e) {
+  try {
+    var ss = SpreadsheetApp.getActiveSpreadsheet();
+    var sheet = ss.getSheetByName("Transactions");
+    if (!sheet || sheet.getLastRow() <= 1) {
+      return ContentService
+        .createTextOutput(JSON.stringify([]))
+        .setMimeType(ContentService.MimeType.JSON);
+    }
+    var rows = sheet.getDataRange().getValues();
+    var headers = rows[0];
+    var result = [];
+    for (var i = 1; i < rows.length; i++) {
+      var obj = {};
+      headers.forEach(function(h, idx) {
+        obj[h.toLowerCase()] = rows[i][idx];
+      });
+      result.push(obj);
+    }
+    return ContentService
+      .createTextOutput(JSON.stringify(result))
+      .setMimeType(ContentService.MimeType.JSON);
+  } catch(err) {
+    return ContentService
+      .createTextOutput(JSON.stringify({error:err.message}))
+      .setMimeType(ContentService.MimeType.JSON);
+  }
+}`;
+
+document.getElementById('appsScriptCode').textContent = GAS_CODE;
+
+// ── INIT ──
+window.addEventListener('load', () => {
+  const saved = localStorage.getItem(STORAGE_KEY);
+  if(saved){
+    document.getElementById('scriptUrlInput').value = saved;
+    setConnected(true);
+    fetchTransactions(saved);
+  } else {
+    setConnected(false);
+  }
+  renderHeads();
+});
+
+// ── NAVIGATION ──
+function navigate(page){
+  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+  document.getElementById('page-'+page).classList.add('active');
+  event.currentTarget.classList.add('active');
+  if(page==='ledger') renderLedger();
+  if(page==='heads') renderHeads();
+}
+
+// ── CONNECT ──
+function saveAndConnect(){
+  const url = document.getElementById('scriptUrlInput').value.trim();
+  if(!url){
+    showToast('❌ Please paste a valid URL', 'error');
+    return;
+  }
+  localStorage.setItem(STORAGE_KEY, url);
+  setConnected(true);
+  showToast('✅ URL saved! Fetching data...', 'success');
+  fetchTransactions(url);
+}
+
+function setConnected(on){
+  document.getElementById('connDot').className = 'conn-dot' + (on?' on':'');
+  document.getElementById('connText').textContent = on ? 'Connected ✓' : 'Not connected';
+}
+
+// ── FETCH ──
+async function fetchTransactions(url){
+  try {
+    const res = await fetch(url + '?action=get', {mode:'cors'});
+    const data = await res.json();
+    if(Array.isArray(data)){
+      allTransactions = data.map(r => ({
+        id: r.id||'',
+        date: r.date||'',
+        head: r.head||'',
+        type: (r.type||'').toUpperCase(),
+        payment: r.payment||'',
+        amount: parseFloat(r.amount)||0,
+        narration: r.narration||''
+      }));
+      updateDashboard();
+      renderLedger();
+      showToast('✅ ' + allTransactions.length + ' transactions loaded', 'success');
+    }
+  } catch(e){
+    showToast('⚠️ Could not fetch from sheet', 'error');
+  }
+}
+
+// ── DASHBOARD ──
+function fmt(n){ return '₹' + n.toLocaleString('en-IN', {maximumFractionDigits:2}); }
+
+function updateDashboard(){
+  const debit = allTransactions.filter(t=>t.type==='DR').reduce((s,t)=>s+t.amount,0);
+  const credit = allTransactions.filter(t=>t.type==='CR').reduce((s,t)=>s+t.amount,0);
+  const net = credit - debit;
+  const upiDeb = allTransactions.filter(t=>t.type==='DR'&&t.payment==='UPI').reduce((s,t)=>s+t.amount,0);
+  const cashDeb = allTransactions.filter(t=>t.type==='DR'&&t.payment==='Cash').reduce((s,t)=>s+t.amount,0);
+
+  document.getElementById('kpiDebit').textContent = fmt(debit);
+  document.getElementById('kpiCredit').textContent = fmt(credit);
+  document.getElementById('kpiNet').textContent = fmt(net);
+  document.getElementById('kpiUPI').textContent = fmt(upiDeb);
+  document.getElementById('kpiCash').textContent = fmt(cashDeb);
+  document.getElementById('kpiCount').textContent = allTransactions.length;
+
+  const recent = [...allTransactions].reverse().slice(0,10);
+  const tbody = document.getElementById('recentBody');
+  if(!recent.length){
+    tbody.innerHTML = '<tr><td colspan="6" class="empty-state">No transactions yet.</td></tr>';
+    return;
+  }
+  tbody.innerHTML = recent.map(t=>`
+    <tr>
+      <td>${t.date}</td>
+      <td>${t.head}</td>
+      <td><span class="badge ${t.type==='DR'?'badge-dr':'badge-cr'}">${t.type}</span></td>
+      <td><span class="badge ${t.payment==='UPI'?'badge-upi':'badge-cash'}">${t.payment}</span></td>
+      <td style="font-weight:600">${fmt(t.amount)}</td>
+      <td style="color:#7a7f8e">${t.narration||'—'}</td>
+    </tr>`).join('');
+}
+
+// ── LEDGER ──
+let activeFilter = 'all';
+function setFilter(f, el){
+  activeFilter = f;
+  document.querySelectorAll('.filter-btn').forEach(b=>b.classList.remove('active'));
+  el.classList.add('active');
+  renderLedger();
+}
+
+function renderLedger(){
+  const q = (document.getElementById('searchBox')?.value||'').toLowerCase();
+  let rows = allTransactions.filter(t=>{
+    const matchQ = !q || t.head.toLowerCase().includes(q) || (t.narration||'').toLowerCase().includes(q);
+    const matchF = activeFilter==='all' || t.type===activeFilter || t.payment===activeFilter;
+    return matchQ && matchF;
+  });
+  const tbody = document.getElementById('ledgerBody');
+  if(!rows.length){
+    tbody.innerHTML = '<tr><td colspan="7" class="empty-state">No matching transactions.</td></tr>';
+    return;
+  }
+  tbody.innerHTML = [...rows].reverse().map((t,i)=>`
+    <tr>
+      <td style="color:#7a7f8e">${rows.length-i}</td>
+      <td>${t.date}</td>
+      <td>${t.head}</td>
+      <td><span class="badge ${t.type==='DR'?'badge-dr':'badge-cr'}">${t.type}</span></td>
+      <td><span class="badge ${t.payment==='UPI'?'badge-upi':'badge-cash'}">${t.payment}</span></td>
+      <td style="font-weight:600">${fmt(t.amount)}</td>
+      <td style="color:#7a7f8e">${t.narration||'—'}</td>
+    </tr>`).join('');
+}
+
+// ── HEADS ──
+function renderHeads(){
+  const grid = document.getElementById('headsGrid');
+  if(!grid) return;
+  grid.innerHTML = heads.map((h,i)=>`
+    <div class="head-item">
+      <span>${h}</span>
+      <button class="del-btn" onclick="deleteHead(${i})" title="Delete">✕</button>
+    </div>`).join('');
+}
+function deleteHead(i){
+  heads.splice(i,1);
+  renderHeads();
+  showToast('Head removed', 'success');
+}
+function addHead(){
+  const inp = document.getElementById('newHeadInput');
+  const val = inp.value.trim();
+  if(!val){ showToast('Enter a head name', 'error'); return; }
+  if(heads.includes(val)){ showToast('Head already exists', 'error'); return; }
+  heads.push(val);
+  inp.value = '';
+  renderHeads();
+  showToast('Head added ✓', 'success');
+}
+
+// ── EXPORT ──
+function exportCSV(){
+  if(!allTransactions.length){ showToast('No data to export', 'error'); return; }
+  const headers = ['ID','Date','Head','Type','Payment','Amount','Narration'];
+  const rows = allTransactions.map(t=>[
+    t.id, t.date, t.head, t.type, t.payment, t.amount, t.narration
+  ].map(v=>'"'+(v||'').toString().replace(/"/g,'""')+'"').join(','));
+  const csv = [headers.join(','), ...rows].join('\n');
+  const blob = new Blob([csv], {type:'text/csv'});
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(blob);
+  a.download = 'samuel_transactions_' + new Date().toISOString().slice(0,10) + '.csv';
+  a.click();
+  showToast('✅ CSV downloaded!', 'success');
+}
+
+// ── COPY CODE ──
+function copyCode(){
+  navigator.clipboard.writeText(GAS_CODE).then(()=>{
+    showToast('✅ Code copied!', 'success');
+  }).catch(()=>{
+    showToast('Copy failed — select manually', 'error');
+  });
+}
+
+// ── TOAST ──
+function showToast(msg, type='success'){
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.className = 'toast show ' + type;
+  setTimeout(()=>t.className='toast', 2800);
+}
+</script>
+</body>
+</html>

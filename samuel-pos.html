@@ -1,0 +1,276 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Samuel POS</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet"/>
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Inter',sans-serif;background:#f5f6fa;min-height:100vh;color:#1a1d23}
+
+.header{background:#fff;border-bottom:1px solid #e8eaf0;padding:0 20px;height:56px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:100;box-shadow:0 1px 4px rgba(0,0,0,0.04)}
+.header-left{display:flex;align-items:center;gap:12px}
+.sp-logo{width:34px;height:34px;background:#1a1d23;color:#fff;border-radius:8px;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:14px}
+.header-info .name{font-weight:600;font-size:15px}
+.header-info .date{font-size:12px;color:#7a7f8e}
+.fo-link{font-size:13px;color:#4f6ef7;font-weight:500;text-decoration:none;padding:6px 14px;border:1px solid #c7d0fc;border-radius:7px;transition:background 0.15s}
+.fo-link:hover{background:#f0f3ff}
+
+.main{max-width:500px;margin:0 auto;padding:20px 16px 100px}
+
+.card{background:#fff;border-radius:12px;border:1px solid #e8eaf0;padding:16px;margin-bottom:14px;box-shadow:0 1px 4px rgba(0,0,0,0.03)}
+
+/* DR/CR Toggle */
+.toggle-row{display:flex;background:#f5f6fa;border:1px solid #e8eaf0;border-radius:10px;padding:4px}
+.toggle-btn{flex:1;padding:10px;text-align:center;border-radius:7px;cursor:pointer;font-weight:600;font-size:14px;transition:all 0.18s;user-select:none;color:#7a7f8e}
+.toggle-btn.active-dr{background:#fff;color:#e53e3e;box-shadow:0 1px 4px rgba(0,0,0,0.1)}
+.toggle-btn.active-cr{background:#fff;color:#38a169;box-shadow:0 1px 4px rgba(0,0,0,0.1)}
+
+/* Head Grid */
+.section-label{font-size:11px;font-weight:600;color:#7a7f8e;text-transform:uppercase;letter-spacing:0.6px;margin-bottom:10px}
+.head-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
+@media(min-width:400px){.head-grid{grid-template-columns:repeat(4,1fr)}}
+.head-box{padding:9px 6px;background:#f5f6fa;border:1.5px solid #e8eaf0;border-radius:8px;text-align:center;font-size:11px;font-weight:500;cursor:pointer;transition:all 0.15s;line-height:1.3;color:#3a3f4b;user-select:none}
+.head-box:hover{border-color:#4f6ef7;color:#4f6ef7;background:#f0f3ff}
+.head-box.selected-dr{background:#fff5f5;border-color:#e53e3e;color:#e53e3e;font-weight:600}
+.head-box.selected-cr{background:#f0fff4;border-color:#38a169;color:#38a169;font-weight:600}
+
+/* Narration */
+.narration-input{width:100%;border:1.5px solid #e8eaf0;border-radius:8px;padding:11px 14px;font-size:14px;font-family:'Inter',sans-serif;outline:none;transition:border 0.15s;resize:none;color:#1a1d23}
+.narration-input:focus{border-color:#4f6ef7}
+
+/* Amount */
+.amount-wrap{position:relative}
+.amount-currency{position:absolute;left:14px;top:50%;transform:translateY(-50%);font-size:22px;font-weight:600;color:#7a7f8e}
+.amount-input{width:100%;border:1.5px solid #e8eaf0;border-radius:8px;padding:14px 14px 14px 38px;font-size:28px;font-weight:700;font-family:'Inter',sans-serif;outline:none;transition:border 0.15s;color:#1a1d23;background:#fff}
+.amount-input:focus{border-color:#4f6ef7}
+.amount-input::placeholder{color:#c9cdd6}
+
+/* Payment Toggle */
+.pay-row{display:flex;background:#f5f6fa;border:1px solid #e8eaf0;border-radius:10px;padding:4px;gap:4px}
+.pay-btn{flex:1;padding:10px;text-align:center;border-radius:7px;cursor:pointer;font-weight:600;font-size:13px;transition:all 0.18s;user-select:none;color:#7a7f8e}
+.pay-btn.active{background:#fff;color:#1a1d23;box-shadow:0 1px 4px rgba(0,0,0,0.1)}
+.pay-upi.active{color:#4f6ef7}
+.pay-cash.active{color:#d97706}
+
+/* Save Button */
+.save-btn{width:100%;padding:15px;background:#1a1d23;color:#fff;border:none;border-radius:10px;font-size:16px;font-weight:600;font-family:'Inter',sans-serif;cursor:pointer;transition:background 0.18s;letter-spacing:0.3px}
+.save-btn:hover{background:#2d3142}
+.save-btn:active{background:#111}
+
+/* Sync dot */
+.sync-bar{position:fixed;bottom:0;left:0;right:0;background:#fff;border-top:1px solid #e8eaf0;padding:8px 20px;display:flex;align-items:center;gap:8px;justify-content:center;font-size:12px;color:#7a7f8e}
+.sync-dot{width:8px;height:8px;border-radius:50%;background:#e53e3e;transition:background 0.3s}
+.sync-dot.connected{background:#38a169}
+
+/* Toast */
+.toast{position:fixed;top:70px;left:50%;transform:translateX(-50%) translateY(-20px);background:#1a1d23;color:#fff;padding:10px 22px;border-radius:8px;font-size:13px;font-weight:500;opacity:0;pointer-events:none;transition:all 0.3s;z-index:999;white-space:nowrap}
+.toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+.toast.error{background:#e53e3e}
+.toast.success{background:#38a169}
+</style>
+</head>
+<body>
+
+<div class="header">
+  <div class="header-left">
+    <div class="sp-logo">SP</div>
+    <div class="header-info">
+      <div class="name">Samuel Philip</div>
+      <div class="date" id="headerDate"></div>
+    </div>
+  </div>
+  <a href="samuel-fo.html" class="fo-link">F&amp;O →</a>
+</div>
+
+<div class="main">
+  <!-- DR/CR Toggle -->
+  <div class="card">
+    <div class="section-label">Transaction Type</div>
+    <div class="toggle-row">
+      <div class="toggle-btn active-dr" id="btnDR" onclick="setType('DR')">⬆ Debit</div>
+      <div class="toggle-btn" id="btnCR" onclick="setType('CR')">⬇ Credit</div>
+    </div>
+  </div>
+
+  <!-- Head Grid -->
+  <div class="card">
+    <div class="section-label">Select Head</div>
+    <div class="head-grid" id="headGrid"></div>
+  </div>
+
+  <!-- Narration -->
+  <div class="card">
+    <div class="section-label">Narration</div>
+    <textarea class="narration-input" id="narration" rows="2" placeholder="Optional note..."></textarea>
+  </div>
+
+  <!-- Amount -->
+  <div class="card">
+    <div class="section-label">Amount</div>
+    <div class="amount-wrap">
+      <span class="amount-currency">₹</span>
+      <input class="amount-input" id="amount" type="number" placeholder="0" min="0" step="0.01"/>
+    </div>
+  </div>
+
+  <!-- Payment Mode -->
+  <div class="card">
+    <div class="section-label">Payment Mode</div>
+    <div class="pay-row">
+      <div class="pay-btn pay-upi active" id="btnUPI" onclick="setPayment('UPI')">📱 UPI</div>
+      <div class="pay-btn pay-cash" id="btnCash" onclick="setPayment('Cash')">💵 Cash</div>
+    </div>
+  </div>
+
+  <!-- Save -->
+  <button class="save-btn" onclick="saveEntry()">Save Entry</button>
+</div>
+
+<!-- Sync dot -->
+<div class="sync-bar">
+  <div class="sync-dot" id="syncDot"></div>
+  <span id="syncText">Checking sheet connection...</span>
+</div>
+
+<!-- Toast -->
+<div class="toast" id="toast"></div>
+
+<script>
+const HEADS = [
+  "Opening Balance","Salary Received","Personal Withdrawals / Drawings",
+  "Food & Dining Expenses","Medical Expenses","Toiletries & Cosmetics",
+  "Grocery & Snacks","Travel & Conveyance","Mobile Recharge & Communication",
+  "Household / Family Support","Friends & Personal Transfers","Returns & Refunds",
+  "Bank Transactions","Miscellaneous Expenses","Office / Shop Purchases",
+  "Entertainment / Outing","Medical BLGM","Stationery / Office Supplies",
+  "Gifts & Donations"
+];
+
+let selectedType = 'DR';
+let selectedHead = '';
+let selectedPayment = 'UPI';
+
+// Header date
+const now = new Date();
+document.getElementById('headerDate').textContent = now.toLocaleDateString('en-IN',{weekday:'short',day:'numeric',month:'short',year:'numeric'});
+
+// Sync dot
+function checkSync(){
+  const url = localStorage.getItem('samuel_sheet_url');
+  const dot = document.getElementById('syncDot');
+  const txt = document.getElementById('syncText');
+  if(url && url.trim()){
+    dot.classList.add('connected');
+    txt.textContent = 'Sheet connected';
+  } else {
+    dot.classList.remove('connected');
+    txt.textContent = 'Sheet not connected — set URL in F&O Settings';
+  }
+}
+checkSync();
+
+// Build head grid
+function buildHeads(){
+  const grid = document.getElementById('headGrid');
+  grid.innerHTML = '';
+  HEADS.forEach(h => {
+    const box = document.createElement('div');
+    box.className = 'head-box';
+    box.textContent = h;
+    box.onclick = () => selectHead(h, box);
+    grid.appendChild(box);
+  });
+}
+buildHeads();
+
+function selectHead(h, el){
+  document.querySelectorAll('.head-box').forEach(b => b.classList.remove('selected-dr','selected-cr'));
+  selectedHead = h;
+  el.classList.add(selectedType === 'DR' ? 'selected-dr' : 'selected-cr');
+}
+
+function setType(t){
+  selectedType = t;
+  document.getElementById('btnDR').className = 'toggle-btn' + (t==='DR'?' active-dr':'');
+  document.getElementById('btnCR').className = 'toggle-btn' + (t==='CR'?' active-cr':'');
+  // Re-color selected head
+  document.querySelectorAll('.head-box').forEach(b => {
+    if(b.textContent === selectedHead){
+      b.classList.remove('selected-dr','selected-cr');
+      b.classList.add(t==='DR'?'selected-dr':'selected-cr');
+    }
+  });
+}
+
+function setPayment(p){
+  selectedPayment = p;
+  document.getElementById('btnUPI').className = 'pay-btn pay-upi' + (p==='UPI'?' active':'');
+  document.getElementById('btnCash').className = 'pay-btn pay-cash' + (p==='Cash'?' active':'');
+}
+
+function showToast(msg, type='success'){
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.className = 'toast show ' + type;
+  setTimeout(() => t.className = 'toast', 2800);
+}
+
+function generateID(){
+  return 'TXN' + Date.now();
+}
+
+async function saveEntry(){
+  const url = localStorage.getItem('samuel_sheet_url');
+  if(!url || !url.trim()){
+    showToast('❌ No sheet URL — set it in F&O Settings', 'error');
+    return;
+  }
+  if(!selectedHead){
+    showToast('⚠️ Please select a head', 'error');
+    return;
+  }
+  const amt = parseFloat(document.getElementById('amount').value);
+  if(!amt || amt <= 0){
+    showToast('⚠️ Enter a valid amount', 'error');
+    return;
+  }
+
+  const entry = {
+    id: generateID(),
+    date: new Date().toLocaleString('en-IN'),
+    head: selectedHead,
+    type: selectedType,
+    payment: selectedPayment,
+    amount: amt,
+    narration: document.getElementById('narration').value.trim() || ''
+  };
+
+  const btn = document.querySelector('.save-btn');
+  btn.textContent = 'Saving...';
+  btn.disabled = true;
+
+  try {
+    await fetch(url, {
+      method: 'POST',
+      mode: 'no-cors',
+      headers: {'Content-Type':'application/json'},
+      body: JSON.stringify(entry)
+    });
+    showToast('✅ Entry saved to sheet!', 'success');
+    // Reset
+    document.getElementById('amount').value = '';
+    document.getElementById('narration').value = '';
+    selectedHead = '';
+    document.querySelectorAll('.head-box').forEach(b => b.classList.remove('selected-dr','selected-cr'));
+  } catch(e){
+    showToast('❌ Failed to save: ' + e.message, 'error');
+  }
+
+  btn.textContent = 'Save Entry';
+  btn.disabled = false;
+}
+</script>
+</body>
+</html>
